@@ -111,35 +111,41 @@ with mainContainer:
         }
 
 
-        invalid_inputs = []
+# Step 1: Validate and transform inputs
+invalid_inputs = []
 
-        if fName.strip() == "":
-            invalid_inputs.append("Client Name")
+for label, value in inputs.items():
+    if value in ['-', None]:
+        invalid_inputs.append(label)
 
-        if loan_amount.strip() == "0" or loan_amount.strip() == "":
-            invalid_inputs.append("Loan Amount")
+for label, value in inputs_to_transform.items():
+    if value in ['-', None]:
+        invalid_inputs.append(label)
 
-        for label, value in inputs.items():
-            if value == '-' or value == "-" or value == None:
-                invalid_inputs.append(label)
+if len(invalid_inputs) > 0:
+    invalid_inputs_str = "Following fields are invalid: \n"
+    st.error(invalid_inputs_str + ", ".join(invalid_inputs))
+else:
+    tab.empty()
+    transformed_inputs = input_transformer(inputs_to_transform)
+    
+    # Step 2: Ensure inputs_array is a list of lists and contains valid data types
+    try:
+        inputs_array = [list(map(float, inputs.values())) + transformed_inputs]
+    except ValueError as e:
+        st.error(f"Error in input values: {e}")
+        inputs_array = None
 
-        for label, value in inputs_to_transform.items():
-            if value == '-' or value == "-" or value == None:
-                invalid_inputs.append(label)
-
-#ffffffffffffffffffff
-        if len(invalid_inputs) > 0:
-            invalid_inputs_str = "Following fields are invalid: \n"
-            st.error(invalid_inputs_str + ", ".join(invalid_inputs))
-        else:
-           tab.empty()
-           transformed_inputs = input_transformer(inputs_to_transform)
-           inputs_array = [list(inputs.values()) + transformed_inputs]
-           st.write("Client Name: " + fName)
-           st.write("Loan Amount: " + loan_amount)
-           # print(inputs)
-           prediction  = model.predict(inputs_array)
-           if prediction[0] == 0:
-               st.success("Please accept the above loan request")
-           else:
-               st.error("Please reject the above request as client is more prone to default on the loan")
+    if inputs_array:
+        st.write("Client Name: " + fName)
+        st.write("Loan Amount: " + loan_amount)
+        
+        # Step 3: Make prediction
+        try:
+            prediction = model.predict(inputs_array)
+            if prediction[0] == 0:
+                st.success("Please accept the above loan request")
+            else:
+                st.error("Please reject the above request as client is more prone to default on the loan")
+        except ValueError as e:
+            st.error(f"Error in prediction: {e}")
