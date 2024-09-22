@@ -1,29 +1,60 @@
 import pickle
 import streamlit as st
 
-# Load the saved model
+# loading the saved models
 model = pickle.load(open('RFMmodel.sav', 'rb'))
 
 def input_transformer(inputs):
     value_map = {
-        "House Owned": {"Yes": 1, "No": 0},
-        "Car Owned": {"Yes": 1, "No": 0},
-        "Bike Owned": {"Yes": 1, "No": 0},
-        "Has Active Loan": {"Yes": 1, "No": 0},
-        "Client Income Type": {"Commercial": 1, "Service": 2, "Student": 3, "Retired": 4, "Unemployed": 5},
-        "Client Education": {"Secondary": 1, "Graduation": 2},
-        "Client Marital Status": {'Married': 1, 'Widow': 2, 'Single': 3, 'Divorced': 4},
-        "Client Gender": {'Male': 1, 'Female': 2},
-        "Loan Contract Type": {'Cash Loan': 1, 'Revolving Loan': 2}
+        "House Owned": {
+            "Yes": 1,
+            "No": 0
+        },
+        "Car Owned": {
+            "Yes": 1,
+            "No": 0
+        },
+        "Bike Owned": {
+            "Yes": 1,
+            "No": 0
+        },
+        "Has Active Loan": {
+            "Yes": 1,
+            "No": 0
+        },
+        "Client Income Type": {
+          "Commercial": 1,
+          "Service": 2,
+          "Student": 3,
+          "Retired": 4,
+          "Unemployed": 5
+        },
+        "Client Education": {
+          "Secondary": 1,
+          "Graduation": 2
+        },
+        "Client Marital Status": {
+          'Married': 1,
+          'Widow': 2,
+          'Single': 3,
+          'Divorced': 4
+        },
+        "Client Gender": {
+          'Male': 1,
+          'Female': 2
+        },
+        "Loan Contract Type": {
+          'Cash Loan': 1,
+          'Revolving Loan': 2
+        }
     }
 
     transformed_inputs = []
     for input, value in inputs.items():
-        if value in value_map[input]:
+        if input in value_map and value in value_map[input]:
             transformed_inputs.append(value_map[input][value])
         else:
-            transformed_inputs.append(None)  # Handle invalid values gracefully
-
+            transformed_inputs.append(value)
     return transformed_inputs
 
 mainContainer = st.container()
@@ -36,19 +67,25 @@ with mainContainer:
     col1, col2 = tab1.columns(2)
 
     fName = col1.text_input("Client full name: ")
+
     active_loan = col1.selectbox("Already has an active loan?", ("-", "Yes", "No"))
-    education = col1.selectbox("Enter client education:", ("-", 'Secondary', 'Graduation'))
-    employed_days = col1.slider("Enter number of employed years before application:", min_value=0, max_value=80)
-    income = col1.text_input("Enter client income:", value="0")
-    income_type = col2.selectbox("Enter income type:", ("-", 'Commercial', 'Retired', 'Service', 'Student', 'Unemployed'))
-    loan_contract_type = col2.selectbox("Enter loan contract type:", ("-", 'Cash Loan', 'Revolving Loan'))
-    loan_amount = col1.text_input("Enter loan amount requested:", value="0")
-    loan_annuity = col2.text_input("Enter loan annuity amount:", value="0")
-    age = col1.slider("Enter age:", min_value=20, max_value=60)
-    gender = col1.selectbox("Enter client gender:", ("-", "Female", "Male"))
-    child_count = col2.selectbox("Enter child count:", (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
-    registration = col2.slider("Years since registration:", min_value=0, max_value=50)
-    marital_status = col1.selectbox("Enter marital status:", ("-", "Divorced", "Single", "Married", "Widow"))
+    education = col1.selectbox("Enter client education:", ("-", 'Secondary', 'Graduation'), on_change=None)
+    employed_days = col1.slider("Enter number of employed years before application:", min_value=0, max_value=80, on_change=None)
+
+    income = col1.text_input("Enter client income:", value=0, on_change=None)
+    income_type = col2.selectbox("Enter income type:", ("-", 'Commercial', 'Retired', 'Service', 'Student', 'Unemployed'), on_change=None)
+    loan_contract_type = col2.selectbox("Enter loan contract type:", ("-", 'Cash Loan', 'Revolving Loan'), on_change=None)
+
+    loan_amount = col1.text_input("Enter loan amount requested:", value=0, on_change=None)
+    loan_annuity = col2.text_input("Enter loan annuity amount:", value=0, on_change=None)
+
+    age = col1.slider("Enter age:", min_value=20, max_value=60, on_change=None)
+
+    gender = col1.selectbox("Enter client gender:", ("-", "Female", "Male"), on_change=None)
+    child_count = col2.selectbox("Enter child count:", (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), on_change=None)
+    registration = col2.slider("Years since registration:", min_value=0, max_value=50, on_change=None)
+
+    marital_status = col1.selectbox("Enter marital status", ("-", "Divorced", "Single", "Married", "Widow"))
     car_owned = col1.selectbox("Car owner?", ("-", "Yes", "No"))
     bike_owned = col1.selectbox("Bike owner?", ("-", "Yes", "No"))
     house_owned = col1.selectbox("House owner?", ("-", "Yes", "No"))
@@ -76,10 +113,8 @@ with mainContainer:
             "Loan Contract Type": loan_contract_type
         }
 
+        # Step 1: Validate and transform inputs
         invalid_inputs = []
-
-        if fName.strip() == "":
-            invalid_inputs.append("Client Name")
 
         for label, value in inputs.items():
             if value in ['-', None, '']:
@@ -96,6 +131,7 @@ with mainContainer:
             tab.empty()
             transformed_inputs = input_transformer(inputs_to_transform)
 
+            # Step 2: Ensure inputs_array is a list of lists and contains valid data types
             try:
                 inputs_array = [list(map(float, [inputs[key] for key in inputs])) + transformed_inputs]
             except ValueError as e:
@@ -106,6 +142,7 @@ with mainContainer:
                 st.write("Client Name: " + fName)
                 st.write("Loan Amount: " + loan_amount)
 
+                # Step 3: Make prediction
                 try:
                     prediction = model.predict(inputs_array)
                     if prediction[0] == 0:
