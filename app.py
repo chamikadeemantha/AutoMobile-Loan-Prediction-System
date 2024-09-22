@@ -2,7 +2,7 @@ import pickle
 import streamlit as st
 
 # Load the saved model
-model = pickle.load(open('SVMmodel.sav', 'rb'))
+model = pickle.load(open('RFMmodel.sav', 'rb'))
 
 def input_transformer(inputs):
     value_map = {
