@@ -35,44 +35,6 @@ st.markdown("""
         margin-bottom: 15px;
         text-align: center;
     }
-    .stButton>button {
-        background-color: #007bff;
-        color: white;
-        border-radius: 10px;
-    }
-    .block-container {
-        padding-top: 2rem;
-    }
-    .stImage {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-    .stImage img {
-        max-width: 200px; /* Resize the image */
-        height: auto;
-    }
-    input, select, textarea, .stTextInput, .stSelectbox, .stSlider {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-    }
-    label {
-        color: #000000 !important; /* Ensure label visibility */
-    }
-    select {
-        background-color: #e6e6e6 !important; /* Lighter color for select boxes */
-    }
-    .modal {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-    }
     .modal-content {
         background-color: white;
         padding: 40px;
@@ -82,16 +44,10 @@ st.markdown("""
         text-align: center;
         position: relative;
         font-size: 18px;
-        color: #000000; /* Ensure message text is visible */
+        color: #000000;
     }
     .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 24px;
-        font-weight: bold;
-        color: #333;
-        cursor: pointer;
+        margin-top: 20px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -99,26 +55,20 @@ st.markdown("""
 # Function for displaying modal (popup)
 def show_modal(message, success=True):
     st.markdown(f"""
-        <div class="modal">
-            <div class="modal-content">
-                <button class="close-btn" onclick="document.getElementById('close-button').click()">×</button>
-                <h4 style="color: {'green' if success else 'red'};">{'Success' if success else 'Error'}</h4>
-                <p>{message}</p>
-            </div>
+        <div class="modal-content">
+            <h4 style="color: {'green' if success else 'red'};">{'Success' if success else 'Error'}</h4>
+            <p>{message}</p>
         </div>
         """, unsafe_allow_html=True)
 
-    # Add a hidden Streamlit button to close the modal
-    if st.button("Close", key="close-modal"):
+    # Streamlit button to close the modal
+    if st.button("Close", key="close-btn", help="Click to close"):
         st.session_state['show_modal'] = False
+        st.experimental_rerun()
 
 # Initialize modal visibility in session state
 if 'show_modal' not in st.session_state:
     st.session_state['show_modal'] = False
-
-# Function to toggle modal state
-def toggle_modal():
-    st.session_state['show_modal'] = not st.session_state['show_modal']
 
 # Page Header
 st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
@@ -244,8 +194,6 @@ with st.container():
                         st.session_state['show_modal'] = True
                         show_modal(f"Error in prediction: {e}", success=False)
 
-# Function to close the modal and clear the form
+# Display the modal if necessary
 if st.session_state['show_modal']:
-    if st.button("Close"):
-        st.session_state['show_modal'] = False
-        st.experimental_rerun()
+    show_modal("", success=False)
