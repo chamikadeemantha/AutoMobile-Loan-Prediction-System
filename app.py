@@ -5,11 +5,11 @@ from PIL import Image
 # Load the saved model
 model = pickle.load(open('RFMmodel.sav', 'rb'))
 
-# Load and display the image
+# Load the image and set page config
 image = Image.open("LoanDrive.jpg")
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
 
-# Custom CSS for fixing text visibility and centering image
+# Custom CSS for styling
 st.markdown("""
     <style>
     body {
@@ -48,15 +48,22 @@ st.markdown("""
         justify-content: center;
         margin-bottom: 20px;
     }
+    .stImage img {
+        max-width: 200px; /* Resize the image */
+        height: auto;
+    }
     input, select, textarea, .stTextInput, .stSelectbox, .stSlider {
         background-color: #ffffff !important;
         color: #000000 !important;
     }
+    label {
+        color: #000000 !important; /* Ensure label visibility */
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Center and display the image
-st.image(image, caption="LoanDrive", use_column_width=True)
+# Display and center the image
+st.image(image, caption="LoanDrive", use_column_width=False)
 
 # Page Header
 st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
