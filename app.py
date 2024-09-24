@@ -74,18 +74,20 @@ st.markdown("""
     }
     .modal-content {
         background-color: white;
-        padding: 20px;
-        border-radius: 10px;
+        padding: 40px;
+        border-radius: 15px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        max-width: 500px;
+        max-width: 600px;
         text-align: center;
         position: relative;
+        font-size: 18px;
     }
     .close {
         position: absolute;
         top: 10px;
         right: 15px;
-        font-size: 20px;
+        font-size: 24px;
+        font-weight: bold;
         cursor: pointer;
     }
     </style>
@@ -224,9 +226,9 @@ with st.container():
                     try:
                         prediction = model.predict(inputs_array)
                         if prediction[0] == 0:
-                            show_modal("Please accept the above loan request", success=True)
+                            show_modal(f"Success: Client Name: {fName}, Loan Amount: {loan_amount}. Please accept the above loan request", success=True)
                         else:
-                            show_modal("Please reject the above request as client is more prone to default on the loan", success=False)
+                            show_modal(f"Error: Client Name: {fName}, Loan Amount: {loan_amount}. Please reject the above request as client is prone to default on the loan", success=False)
                     except ValueError as e:
                         show_modal(f"Error in prediction: {e}", success=False)
 
