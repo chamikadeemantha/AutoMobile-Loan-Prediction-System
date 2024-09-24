@@ -71,6 +71,7 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: center;
+        z-index: 1000;
     }
     .modal-content {
         background-color: white;
@@ -88,6 +89,7 @@ st.markdown("""
         right: 15px;
         font-size: 24px;
         font-weight: bold;
+        color: #333;
         cursor: pointer;
     }
     </style>
@@ -99,7 +101,7 @@ def show_modal(message, success=True):
         <div class="modal">
             <div class="modal-content">
                 <span class="close" onclick="window.location.reload()">×</span>
-                <h4>{'Success' if success else 'Error'}</h4>
+                <h4 style="color: {'green' if success else 'red'};">{'Success' if success else 'Error'}</h4>
                 <p>{message}</p>
             </div>
         </div>
