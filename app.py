@@ -82,6 +82,7 @@ st.markdown("""
         text-align: center;
         position: relative;
         font-size: 18px;
+        color: #000000; /* Ensure message text is visible */
     }
     .close {
         position: absolute;
@@ -97,17 +98,18 @@ st.markdown("""
 
 # Function for displaying modal (popup)
 def show_modal(message, success=True):
-    st.markdown(f"""
-        <div class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="window.location.reload()">×</span>
-                <h4 style="color: {'green' if success else 'red'};">{'Success' if success else 'Error'}</h4>
-                <p>{message}</p>
+    if st.session_state['show_modal']:
+        st.markdown(f"""
+            <div class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="window.location.reload()">×</span>
+                    <h4 style="color: {'green' if success else 'red'};">{'Success' if success else 'Error'}</h4>
+                    <p>{message}</p>
+                </div>
             </div>
-        </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
-# Handle modal visibility
+# Handle modal visibility in session state
 if 'show_modal' not in st.session_state:
     st.session_state['show_modal'] = False
 
@@ -211,6 +213,7 @@ with st.container():
             invalid_inputs += [label for label, value in inputs_to_transform.items() if value in ['-', None, '']]
 
             if invalid_inputs:
+                st.session_state['show_modal'] = True
                 show_modal("Following fields are invalid: " + ", ".join(invalid_inputs), success=False)
             else:
                 transformed_inputs = input_transformer(inputs_to_transform)
@@ -218,6 +221,7 @@ with st.container():
                 try:
                     inputs_array = [list(map(float, [inputs[key] for key in inputs])) + transformed_inputs]
                 except ValueError as e:
+                    st.session_state['show_modal'] = True
                     show_modal(f"Error in input values: {e}", success=False)
                     inputs_array = None
 
@@ -228,12 +232,15 @@ with st.container():
                     try:
                         prediction = model.predict(inputs_array)
                         if prediction[0] == 0:
+                            st.session_state['show_modal'] = True
                             show_modal(f"Success: Client Name: {fName}, Loan Amount: {loan_amount}. Please accept the above loan request", success=True)
                         else:
+                            st.session_state['show_modal'] = True
                             show_modal(f"Error: Client Name: {fName}, Loan Amount: {loan_amount}. Please reject the above request as client is prone to default on the loan", success=False)
                     except ValueError as e:
+                        st.session_state['show_modal'] = True
                         show_modal(f"Error in prediction: {e}", success=False)
 
-# Display the modal if necessary
+# Function to clear data on modal close
 if st.session_state['show_modal']:
-    toggle_modal()  # Ensure the modal is shown
+    toggle_modal()
