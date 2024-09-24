@@ -5,7 +5,7 @@ from PIL import Image
 # Load the saved model
 model = pickle.load(open('RFMmodel.sav', 'rb'))
 
-# Load the image and set page config
+# Load and display the image
 image = Image.open("LoanDrive.jpg")
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
 
@@ -59,14 +59,63 @@ st.markdown("""
     label {
         color: #000000 !important; /* Ensure label visibility */
     }
+    select {
+        background-color: #e6e6e6 !important; /* Lighter color for select boxes */
+    }
+    .modal {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        max-width: 500px;
+        text-align: center;
+        position: relative;
+    }
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 20px;
+        cursor: pointer;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Display and center the image
-st.image(image, caption="LoanDrive", use_column_width=False)
+# Function for displaying modal (popup)
+def show_modal(message, success=True):
+    st.markdown(f"""
+        <div class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="window.location.reload()">×</span>
+                <h4>{'Success' if success else 'Error'}</h4>
+                <p>{message}</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+# Handle modal visibility
+if 'show_modal' not in st.session_state:
+    st.session_state['show_modal'] = False
+
+# Function to toggle modal state
+def toggle_modal():
+    st.session_state['show_modal'] = not st.session_state['show_modal']
 
 # Page Header
 st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
+
+# Display and center the image
+st.image(image, caption="LoanDrive", use_column_width=False)
 
 def input_transformer(inputs):
     value_map = {
@@ -158,14 +207,14 @@ with st.container():
             invalid_inputs += [label for label, value in inputs_to_transform.items() if value in ['-', None, '']]
 
             if invalid_inputs:
-                st.error("Following fields are invalid: \n" + ", ".join(invalid_inputs))
+                show_modal("Following fields are invalid: " + ", ".join(invalid_inputs), success=False)
             else:
                 transformed_inputs = input_transformer(inputs_to_transform)
 
                 try:
                     inputs_array = [list(map(float, [inputs[key] for key in inputs])) + transformed_inputs]
                 except ValueError as e:
-                    st.error(f"Error in input values: {e}")
+                    show_modal(f"Error in input values: {e}", success=False)
                     inputs_array = None
 
                 if inputs_array:
@@ -175,8 +224,12 @@ with st.container():
                     try:
                         prediction = model.predict(inputs_array)
                         if prediction[0] == 0:
-                            st.success("Please accept the above loan request")
+                            show_modal("Please accept the above loan request", success=True)
                         else:
-                            st.error("Please reject the above request as client is more prone to default on the loan")
+                            show_modal("Please reject the above request as client is more prone to default on the loan", success=False)
                     except ValueError as e:
-                        st.error(f"Error in prediction: {e}")
+                        show_modal(f"Error in prediction: {e}", success=False)
+
+# Display the modal if necessary
+if st.session_state['show_modal']:
+    toggle_modal()  # Ensure the modal is shown
