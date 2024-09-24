@@ -84,7 +84,7 @@ st.markdown("""
         font-size: 18px;
         color: #000000; /* Ensure message text is visible */
     }
-    .close {
+    .close-btn {
         position: absolute;
         top: 10px;
         right: 15px;
@@ -98,18 +98,21 @@ st.markdown("""
 
 # Function for displaying modal (popup)
 def show_modal(message, success=True):
-    if st.session_state['show_modal']:
-        st.markdown(f"""
-            <div class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="window.location.reload()">×</span>
-                    <h4 style="color: {'green' if success else 'red'};">{'Success' if success else 'Error'}</h4>
-                    <p>{message}</p>
-                </div>
+    st.markdown(f"""
+        <div class="modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="document.getElementById('close-button').click()">×</button>
+                <h4 style="color: {'green' if success else 'red'};">{'Success' if success else 'Error'}</h4>
+                <p>{message}</p>
             </div>
-            """, unsafe_allow_html=True)
+        </div>
+        """, unsafe_allow_html=True)
 
-# Handle modal visibility in session state
+    # Add a hidden Streamlit button to close the modal
+    if st.button("Close", key="close-modal"):
+        st.session_state['show_modal'] = False
+
+# Initialize modal visibility in session state
 if 'show_modal' not in st.session_state:
     st.session_state['show_modal'] = False
 
@@ -241,6 +244,8 @@ with st.container():
                         st.session_state['show_modal'] = True
                         show_modal(f"Error in prediction: {e}", success=False)
 
-# Function to clear data on modal close
+# Function to close the modal and clear the form
 if st.session_state['show_modal']:
-    toggle_modal()
+    if st.button("Close"):
+        st.session_state['show_modal'] = False
+        st.experimental_rerun()
