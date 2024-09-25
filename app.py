@@ -60,7 +60,7 @@ st.markdown("""
         color: #000000 !important; /* Ensure label visibility */
     }
     select {
-        background-color: #c1c1c1 !important; /* Lighter color for select boxes */
+        background-color: #e6e6e6 !important; /* Lighter color for select boxes */
     }
     .modal {
         position: fixed;
