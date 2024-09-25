@@ -9,6 +9,121 @@ model = pickle.load(open('RFMmodel.sav', 'rb'))
 image = Image.open("LoanDrive.jpg")
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
 
+# Custom CSS for toast, modal, and label styling
+st.markdown("""
+    <style>
+    body {
+        background-color: #f0f2f6;
+    }
+    .main {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+        font-size: 32px;
+        font-weight: bold;
+        color: #003f88;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .form-title {
+        font-size: 22px;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    .stButton>button {
+        background-color: #007bff;
+        color: white;
+        border-radius: 10px;    
+    }
+    .block-container {
+        padding-top: 2rem;
+    }
+    .stImage {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .stImage img {
+        max-width: 200px;
+        height: auto;
+    }
+    input, select, textarea, .stTextInput, .stSelectbox, .stSlider {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+    label {
+        font-size: 18px !important;
+        font-weight: bold;
+        color: #000000 !important;
+    }
+    select {
+        background-color: #c1c1c1 !important;
+    }
+    /* Custom toast message styling */
+    .toast {
+        visibility: visible;
+        max-width: 400px;
+        margin: auto;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 12px;
+        padding: 15px;
+        position: fixed;
+        z-index: 1;
+        right: 20px;
+        bottom: 30px;
+        font-size: 16px;
+    }
+    .toast-error {
+        background-color: #dc3545;
+    }
+    .toast-close-btn {
+        margin-left: 10px;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    /* Modal styling */
+    .modal {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+    .modal-content {
+        background-color: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        max-width: 600px;
+        text-align: center;
+        position: relative;
+        font-size: 18px;
+        color: #000000;
+    }
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Function to reset form inputs
 def reset_form():
     for key in st.session_state.keys():
@@ -18,13 +133,6 @@ def reset_form():
 # Initialize session state for inputs if not already done
 if "show_modal" not in st.session_state:
     st.session_state["show_modal"] = False
-
-# Custom CSS for toast, modal, and label styling
-st.markdown("""
-    <style>
-    /* Your CSS styling code here */
-    </style>
-""", unsafe_allow_html=True)
 
 # Function to display custom toast messages for errors
 def display_toast(message):
