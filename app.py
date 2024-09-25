@@ -49,7 +49,7 @@ st.markdown("""
         margin-bottom: 20px;
     }
     .stImage img {
-        max-width: 200px; /* Resize the image */
+        max-width: 200px;
         height: auto;
     }
     input, select, textarea, .stTextInput, .stSelectbox, .stSlider {
@@ -57,76 +57,15 @@ st.markdown("""
         color: #000000 !important;
     }
     label {
-        font-size: 32px;    
-        color: #000000 !important; /* Ensure label visibility */
+        color: #000000 !important;
     }
     select {
-        background-color: #c1c1c1 !important; /* Lighter color for select boxes */
-    }
-    .modal {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-    }
-    .modal-content {
-        background-color: white;
-        padding: 40px;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        max-width: 600px;
-        text-align: center;
-        position: relative;
-        font-size: 18px;
-        color: #000000; /* Ensure message text is visible */
-    }
-    .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 24px;
-        font-weight: bold;
-        color: #333;
-        cursor: pointer;
+        background-color: #c1c1c1 !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Function for displaying modal (popup)
-def show_modal(message, success=True):
-    st.markdown(f"""
-        <div class="modal">
-            <div class="modal-content">
-                <button class="close-btn" onclick="document.getElementById('close-button').click()">×</button>
-                <h4 style="color: {'green' if success else 'red'};">{'Success' if success else 'Error'}</h4>
-                <p>{message}</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # Add a hidden Streamlit button to close the modal
-    if st.button("Close", key="close-modal"):
-        st.session_state['show_modal'] = False
-
-# Initialize modal visibility in session state
-if 'show_modal' not in st.session_state:
-    st.session_state['show_modal'] = False
-
-# Function to toggle modal state
-def toggle_modal():
-    st.session_state['show_modal'] = not st.session_state['show_modal']
-
-# Page Header
-st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
-
-# Display and center the image
-st.image(image, caption="LoanDrive", use_column_width=False)
-
+# Function to transform input values
 def input_transformer(inputs):
     value_map = {
         "House Owned": {"Yes": 1, "No": 0},
@@ -157,6 +96,12 @@ def input_transformer(inputs):
         else:
             transformed_inputs.append(value)
     return transformed_inputs
+
+# Page Header
+st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
+
+# Display and center the image
+st.image(image, caption="LoanDrive", use_column_width=False)
 
 # Main container for the form
 with st.container():
@@ -217,16 +162,14 @@ with st.container():
             invalid_inputs += [label for label, value in inputs_to_transform.items() if value in ['-', None, '']]
 
             if invalid_inputs:
-                st.session_state['show_modal'] = True
-                show_modal("Following fields are invalid: " + ", ".join(invalid_inputs), success=False)
+                st.toast(f"Error: Following fields are invalid: " + ", ".join(invalid_inputs))
             else:
                 transformed_inputs = input_transformer(inputs_to_transform)
 
                 try:
                     inputs_array = [list(map(float, [inputs[key] for key in inputs])) + transformed_inputs]
                 except ValueError as e:
-                    st.session_state['show_modal'] = True
-                    show_modal(f"Error in input values: {e}", success=False)
+                    st.toast(f"Error in input values: {e}")
                     inputs_array = None
 
                 if inputs_array:
@@ -236,17 +179,8 @@ with st.container():
                     try:
                         prediction = model.predict(inputs_array)
                         if prediction[0] == 0:
-                            st.session_state['show_modal'] = True
-                            show_modal(f"Success: Client Name: {fName}, Loan Amount: {loan_amount}. Please accept the above loan request", success=True)
+                            st.toast(f"Success: Client Name: {fName}, Loan Amount: {loan_amount}. Loan request accepted.", duration=5)
                         else:
-                            st.session_state['show_modal'] = True
-                            show_modal(f"Error: Client Name: {fName}, Loan Amount: {loan_amount}. Please reject the above request as client is prone to default on the loan", success=False)
+                            st.toast(f"Error: Client Name: {fName}, Loan Amount: {loan_amount}. Client prone to default. Loan request rejected.", duration=5)
                     except ValueError as e:
-                        st.session_state['show_modal'] = True
-                        show_modal(f"Error in prediction: {e}", success=False)
-
-# Function to close the modal and clear the form
-if st.session_state['show_modal']:
-    if st.button("Close"):
-        st.session_state['show_modal'] = False
-        st.experimental_rerun()
+                        st.toast(f"Error in prediction: {e}")
