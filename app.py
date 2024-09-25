@@ -9,7 +9,7 @@ model = pickle.load(open('RFMmodel.sav', 'rb'))
 image = Image.open("LoanDrive.jpg")
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
 
-# Custom CSS for styling
+# Custom CSS for toast and label styling
 st.markdown("""
     <style>
     body {
@@ -49,7 +49,7 @@ st.markdown("""
         margin-bottom: 20px;
     }
     .stImage img {
-        max-width: 200px;
+        max-width: 200px; /* Resize the image */
         height: auto;
     }
     input, select, textarea, .stTextInput, .stSelectbox, .stSlider {
@@ -57,13 +57,61 @@ st.markdown("""
         color: #000000 !important;
     }
     label {
-        color: #000000 !important;
+        font-size: 18px !important; /* Increase label font size */
+        font-weight: bold;
+        color: #000000 !important; /* Ensure label visibility */
     }
     select {
         background-color: #c1c1c1 !important;
     }
+    /* Custom toast message styling */
+    .toast {
+        visibility: visible;
+        max-width: 400px;
+        margin: auto;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 12px;
+        padding: 15px;
+        position: fixed;
+        z-index: 1;
+        right: 20px;
+        bottom: 30px;
+        font-size: 16px;
+    }
+    .toast-success {
+        background-color: #28a745;
+    }
+    .toast-error {
+        background-color: #dc3545;
+    }
+    .toast-close-btn {
+        margin-left: 10px;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+    }
     </style>
 """, unsafe_allow_html=True)
+
+# Function to display custom toast messages
+def display_toast(message, success=True):
+    toast_type = "toast-success" if success else "toast-error"
+    st.markdown(f"""
+        <div class="toast {toast_type}">
+            {message}
+            <span class="toast-close-btn">×</span>
+        </div>
+        <script>
+            setTimeout(function() {{
+                var toast = document.querySelector('.toast');
+                if (toast) {{
+                    toast.style.visibility = 'hidden';
+                }}
+            }}, 5000);
+        </script>
+    """, unsafe_allow_html=True)
 
 # Function to transform input values
 def input_transformer(inputs):
@@ -162,14 +210,15 @@ with st.container():
             invalid_inputs += [label for label, value in inputs_to_transform.items() if value in ['-', None, '']]
 
             if invalid_inputs:
-                st.toast(f"Error: Following fields are invalid: " + ", ".join(invalid_inputs))
+                display_toast(f"Error
+                              : Following fields are invalid: " + ", ".join(invalid_inputs), success=False)
             else:
                 transformed_inputs = input_transformer(inputs_to_transform)
 
                 try:
                     inputs_array = [list(map(float, [inputs[key] for key in inputs])) + transformed_inputs]
                 except ValueError as e:
-                    st.toast(f"Error in input values: {e}")
+                    display_toast(f"Error in input values: {e}", success=False)
                     inputs_array = None
 
                 if inputs_array:
@@ -179,8 +228,8 @@ with st.container():
                     try:
                         prediction = model.predict(inputs_array)
                         if prediction[0] == 0:
-                            st.toast(f"Success: Client Name: {fName}, Loan Amount: {loan_amount}. Loan request accepted.", duration=5)
+                            display_toast(f"Success: Client Name: {fName}, Loan Amount: {loan_amount}. Loan request accepted.", success=True)
                         else:
-                            st.toast(f"Error: Client Name: {fName}, Loan Amount: {loan_amount}. Client prone to default. Loan request rejected.", duration=5)
+                            display_toast(f"Error: Client Name: {fName}, Loan Amount: {loan_amount}. Client prone to default. Loan request rejected.", success=False)
                     except ValueError as e:
-                        st.toast(f"Error in prediction: {e}")
+                        display_toast(f"Error in prediction: {e}", success=False)
