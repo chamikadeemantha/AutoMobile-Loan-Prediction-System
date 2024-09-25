@@ -53,14 +53,14 @@ st.markdown("""
         height: auto;
     }
     input, select, textarea, .stTextInput, .stSelectbox, .stSlider {
-        background-color: #c1c1c1 !important;
+        background-color: #ffffff !important;
         color: #000000 !important;
     }
     label {
         color: #000000 !important; /* Ensure label visibility */
     }
     select {
-        background-color: #e6e6e6 !important; /* Lighter color for select boxes */
+        background-color: #c1c1c1 !important; /* Lighter color for select boxes */
     }
     .modal {
         position: fixed;
