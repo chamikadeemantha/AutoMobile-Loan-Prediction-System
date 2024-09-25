@@ -57,6 +57,7 @@ st.markdown("""
         color: #000000 !important;
     }
     label {
+        font-size: 32px;    
         color: #000000 !important; /* Ensure label visibility */
     }
     select {
@@ -171,7 +172,7 @@ with st.container():
         employed_days = col1.slider("Enter number of employed years before application:", min_value=0, max_value=80)
 
         income = col1.text_input("Enter client income:", value=0)
-        income_type = col2.selectbox("Enter income type:", ("Choose", 'Commercial', 'Retired', 'Service', 'Student', 'Unemployed'))
+        income_type = col2.selectbox("Enter income type:", ("-", 'Commercial', 'Retired', 'Service', 'Student', 'Unemployed'))
         loan_contract_type = col2.selectbox("Enter loan contract type:", ("-", 'Cash Loan', 'Revolving Loan'))
 
         loan_amount = col1.text_input("Enter loan amount requested:", value=0)
