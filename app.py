@@ -210,8 +210,7 @@ with st.container():
             invalid_inputs += [label for label, value in inputs_to_transform.items() if value in ['-', None, '']]
 
             if invalid_inputs:
-                display_toast(f"Error
-                              : Following fields are invalid: " + ", ".join(invalid_inputs), success=False)
+                display_toast(f"Error\n"" Following fields are invalid: " + ", ".join(invalid_inputs), success=False)
             else:
                 transformed_inputs = input_transformer(inputs_to_transform)
 
