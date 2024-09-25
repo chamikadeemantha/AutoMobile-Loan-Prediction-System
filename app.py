@@ -53,7 +53,7 @@ st.markdown("""
         height: auto;
     }
     input, select, textarea, .stTextInput, .stSelectbox, .stSlider {
-        background-color: #ffffff !important;
+        background-color: #c1c1c1 !important;
         color: #000000 !important;
     }
     label {
