@@ -137,22 +137,27 @@ def display_toast(message):
                 if (toast) {{
                     toast.style.visibility = 'hidden';
                 }}
-            }}, 5000);
+            }}, 6000);
         </script>
     """, unsafe_allow_html=True)
 
 # Function to display a success popup (modal)
-def display_success_modal(message):
+def display_success_modal(client_name, loan_amount):
     st.markdown(f"""
         <div class="modal">
             <div class="modal-content">
                 <button class="close-btn" onclick="document.getElementById('close-button').click()">×</button>
-                <h4 style="color: green;">Success</h4>
-                <p>{message}</p>
+                <h4 style="color: green; font-size: 24px; font-weight: bold;">Success</h4>
+                <p style="text-align: left; font-size: 18px;">
+                    <b>Client Name:</b> {client_name}<br>
+                    <b>Loan Amount:</b> {loan_amount}
+                </p>
+                <p style="text-align: left; font-size: 16px;">Loan request accepted.</p>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
+    # Add a hidden button to close the modal
     if st.button("Close", key="close-modal"):
         st.session_state['show_modal'] = False
 
@@ -270,7 +275,7 @@ with st.container():
                     try:
                         prediction = model.predict(inputs_array)
                         if prediction[0] == 0:
-                            display_success_modal(f"Success: Client Name: {fName}, Loan Amount: {loan_amount}. Loan request accepted.")
+                            display_success_modal(fName, loan_amount)
                         else:
                             display_toast(f"Error: Client Name: {fName}, Loan Amount: {loan_amount}. Client prone to default. Loan request rejected.")
                     except ValueError as e:
