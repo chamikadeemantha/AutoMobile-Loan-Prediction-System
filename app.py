@@ -9,7 +9,7 @@ model = pickle.load(open('RFMmodel.sav', 'rb'))
 image = Image.open("LoanDrive.jpg")
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
 
-# Custom CSS for toast and label styling
+# Custom CSS for toast, modal, and label styling
 st.markdown("""
     <style>
     body {
@@ -38,7 +38,7 @@ st.markdown("""
     .stButton>button {
         background-color: #007bff;
         color: white;
-        border-radius: 10px;
+        border-radius: 10px;    
     }
     .block-container {
         padding-top: 2rem;
@@ -80,9 +80,6 @@ st.markdown("""
         bottom: 30px;
         font-size: 16px;
     }
-    .toast-success {
-        background-color: #28a745;
-    }
     .toast-error {
         background-color: #dc3545;
     }
@@ -92,14 +89,45 @@ st.markdown("""
         cursor: pointer;
         font-weight: bold;
     }
+    /* Modal styling */
+    .modal {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+    .modal-content {
+        background-color: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        max-width: 600px;
+        text-align: center;
+        position: relative;
+        font-size: 18px;
+        color: #000000; /* Ensure message text is visible */
+    }
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Function to display custom toast messages
-def display_toast(message, success=True):
-    toast_type = "toast-success" if success else "toast-error"
+# Function to display custom toast messages for errors
+def display_toast(message):
     st.markdown(f"""
-        <div class="toast {toast_type}">
+        <div class="toast toast-error">
             {message}
             <span class="toast-close-btn">×</span>
         </div>
@@ -112,6 +140,21 @@ def display_toast(message, success=True):
             }}, 5000);
         </script>
     """, unsafe_allow_html=True)
+
+# Function to display a success popup (modal)
+def display_success_modal(message):
+    st.markdown(f"""
+        <div class="modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="document.getElementById('close-button').click()">×</button>
+                <h4 style="color: green;">Success</h4>
+                <p>{message}</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    if st.button("Close", key="close-modal"):
+        st.session_state['show_modal'] = False
 
 # Function to transform input values
 def input_transformer(inputs):
@@ -210,14 +253,14 @@ with st.container():
             invalid_inputs += [label for label, value in inputs_to_transform.items() if value in ['-', None, '']]
 
             if invalid_inputs:
-                display_toast(f"Error\n"" Following fields are invalid: " + ", ".join(invalid_inputs), success=False)
+                display_toast(f"Error: Following fields are invalid: " + ", ".join(invalid_inputs))
             else:
                 transformed_inputs = input_transformer(inputs_to_transform)
 
                 try:
                     inputs_array = [list(map(float, [inputs[key] for key in inputs])) + transformed_inputs]
                 except ValueError as e:
-                    display_toast(f"Error in input values: {e}", success=False)
+                    display_toast(f"Error in input values: {e}")
                     inputs_array = None
 
                 if inputs_array:
@@ -227,8 +270,8 @@ with st.container():
                     try:
                         prediction = model.predict(inputs_array)
                         if prediction[0] == 0:
-                            display_toast(f"Success: Client Name: {fName}, Loan Amount: {loan_amount}. Loan request accepted.", success=True)
+                            display_success_modal(f"Success: Client Name: {fName}, Loan Amount: {loan_amount}. Loan request accepted.")
                         else:
-                            display_toast(f"Error: Client Name: {fName}, Loan Amount: {loan_amount}. Client prone to default. Loan request rejected.", success=False)
+                            display_toast(f"Error: Client Name: {fName}, Loan Amount: {loan_amount}. Client prone to default. Loan request rejected.")
                     except ValueError as e:
-                        display_toast(f"Error in prediction: {e}", success=False)
+                        display_toast(f"Error in prediction: {e}")
