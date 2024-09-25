@@ -57,7 +57,7 @@ st.markdown("""
         color: #000000 !important;
     }
     label {
-        color: #000000 !important; /* Ensure label visibility */
+        color: #ffffff !important; /* Ensure label visibility */
     }
     select {
         background-color: #e6e6e6 !important; /* Lighter color for select boxes */
