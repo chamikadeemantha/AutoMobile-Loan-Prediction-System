@@ -126,11 +126,12 @@ st.markdown("""
 
 # Function to reset form inputs
 def reset_form():
+    # Reset all form fields
     for key in st.session_state.keys():
         if key.startswith("input_"):
             st.session_state[key] = ""
 
-# Initialize session state for inputs if not already done
+# Initialize session state for modal visibility and form inputs if not already done
 if "show_modal" not in st.session_state:
     st.session_state["show_modal"] = False
 
@@ -153,56 +154,9 @@ def display_toast(message):
 
 # Function to display a success popup (modal)
 def display_success_modal(client_name, loan_amount):
-    st.markdown(f"""
-        <div class="modal">
-            <div class="modal-content">
-                <button class="close-btn" onclick="document.getElementById('close-button').click()">×</button>
-                <h4 style="color: green; font-size: 24px; font-weight: bold;">Success</h4>
-                <p style="text-align: left; font-size: 18px;">
-                    <b>Client Name:</b> {client_name}<br>
-                    <b>Loan Amount:</b> {loan_amount}
-                </p>
-                <p style="text-align: left; font-size: 16px;">Loan request accepted.</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # Add a hidden button to close the modal
-    if st.button("Close", key="close-modal"):
-        st.session_state['show_modal'] = False
-        reset_form()  # Reset form inputs when modal is closed
-
-# Function to transform input values
-def input_transformer(inputs):
-    value_map = {
-        "House Owned": {"Yes": 1, "No": 0},
-        "Car Owned": {"Yes": 1, "No": 0},
-        "Bike Owned": {"Yes": 1, "No": 0},
-        "Has Active Loan": {"Yes": 1, "No": 0},
-        "Client Income Type": {
-            "Commercial": 1, "Service": 2, "Student": 3, "Retired": 4, "Unemployed": 5
-        },
-        "Client Education": {
-            "Secondary": 1, "Graduation": 2
-        },
-        "Client Marital Status": {
-            'Married': 1, 'Widow': 2, 'Single': 3, 'Divorced': 4
-        },
-        "Client Gender": {
-            'Male': 1, 'Female': 2
-        },
-        "Loan Contract Type": {
-            'Cash Loan': 1, 'Revolving Loan': 2
-        }
-    }
-
-    transformed_inputs = []
-    for input, value in inputs.items():
-        if input in value_map and value in value_map[input]:
-            transformed_inputs.append(value_map[input][value])
-        else:
-            transformed_inputs.append(value)
-    return transformed_inputs
+    st.session_state["show_modal"] = True
+    st.session_state["client_name"] = client_name
+    st.session_state["loan_amount"] = loan_amount
 
 # Page Header
 st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
@@ -286,3 +240,23 @@ with st.container():
                             display_toast(f"Error: Client Name: {fName}, Loan Amount: {loan_amount}. Client prone to default. Loan request rejected.")
                     except ValueError as e:
                         display_toast(f"Error in prediction: {e}")
+
+# Display modal if `show_modal` is True
+if st.session_state["show_modal"]:
+    st.markdown(f"""
+        <div class="modal">
+            <div class="modal-content">
+                <h4 style="color: green; font-size: 24px; font-weight: bold;">Success</h4>
+                <p style="text-align: left; font-size: 18px;">
+                    <b>Client Name:</b> {st.session_state["client_name"]}<br>
+                    <b>Loan Amount:</b> {st.session_state["loan_amount"]}
+                </p>
+                <p style="text-align: left; font-size: 16px;">Loan request accepted.</p>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Close button outside the form
+    if st.button("Close Modal"):
+        st.session_state["show_modal"] = False
+        reset_form()  # Reset form inputs when modal is closed
