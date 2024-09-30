@@ -140,7 +140,7 @@ def display_toast(message):
     st.markdown(f"""
         <div class="toast toast-error">
             {message}
-            <span class="toast-close-btn">×</span>
+            <span class="toast-close-btn" onclick="this.parentElement.style.visibility='hidden';">×</span>
         </div>
         <script>
             setTimeout(function() {{
@@ -252,6 +252,7 @@ if st.session_state["show_modal"]:
                     <b>Loan Amount:</b> {st.session_state["loan_amount"]}
                 </p>
                 <p style="text-align: left; font-size: 16px;">Loan request accepted.</p>
+                <span class="close-btn" onclick="document.querySelector('.modal').style.display='none';">×</span>
             </div>
         </div>
     """, unsafe_allow_html=True)
