@@ -259,4 +259,4 @@ if st.session_state["show_modal"]:
     # Close button outside the form
     if st.button("Close Modal"):
         st.session_state["show_modal"] = False
-        reset_form()  # Reset form inputs when modal is closed 
+        reset_form()  # Reset form inputs when modal is closed
