@@ -79,6 +79,8 @@ st.markdown("""
         right: 20px;
         bottom: 30px;
         font-size: 16px;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
     }
     .toast-error {
         background-color: #dc3545;
@@ -138,15 +140,15 @@ if "show_modal" not in st.session_state:
 # Function to display custom toast messages for errors
 def display_toast(message):
     st.markdown(f"""
-        <div class="toast toast-error">
+        <div class="toast toast-error" id="toast">
             {message}
-            <span class="toast-close-btn" onclick="this.parentElement.style.visibility='hidden';">×</span>
+            <span class="toast-close-btn" onclick="document.getElementById('toast').style.opacity='0';">×</span>
         </div>
         <script>
             setTimeout(function() {{
-                var toast = document.querySelector('.toast');
+                var toast = document.getElementById('toast');
                 if (toast) {{
-                    toast.style.visibility = 'hidden';
+                    toast.style.opacity = '0';
                 }}
             }}, 6000);
         </script>
@@ -244,7 +246,7 @@ with st.container():
 # Display modal if `show_modal` is True
 if st.session_state["show_modal"]:
     st.markdown(f"""
-        <div class="modal">
+        <div class="modal" id="modal">
             <div class="modal-content">
                 <h4 style="color: green; font-size: 24px; font-weight: bold;">Success</h4>
                 <p style="text-align: left; font-size: 18px;">
@@ -252,7 +254,7 @@ if st.session_state["show_modal"]:
                     <b>Loan Amount:</b> {st.session_state["loan_amount"]}
                 </p>
                 <p style="text-align: left; font-size: 16px;">Loan request accepted.</p>
-                <span class="close-btn" onclick="document.querySelector('.modal').style.display='none';">×</span>
+                <span class="close-btn" onclick="document.getElementById('modal').style.display='none';">×</span>
             </div>
         </div>
     """, unsafe_allow_html=True)
