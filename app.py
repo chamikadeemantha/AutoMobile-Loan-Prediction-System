@@ -1,6 +1,7 @@
 import pickle
 import streamlit as st
 from PIL import Image
+import time
 
 # Load the saved model
 model = pickle.load(open('RFMmodel.sav', 'rb'))
@@ -9,7 +10,7 @@ model = pickle.load(open('RFMmodel.sav', 'rb'))
 image = Image.open("LoanDrive.jpg")
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
 
-# Custom CSS for toast, modal, and label styling
+# Custom CSS for modal and form styling
 st.markdown("""
     <style>
     body {
@@ -52,56 +53,10 @@ st.markdown("""
         max-width: 200px;
         height: auto;
     }
-    input, select, textarea, .stTextInput, .stSelectbox, .stSlider {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-    }
     label {
         font-size: 18px !important;
         font-weight: bold;
         color: #000000 !important;
-    }
-    select {
-        background-color: #c1c1c1 !important;
-    }
-    /* Custom toast message styling */
-    .toast {
-        visibility: visible;
-        max-width: 400px;
-        margin: auto;
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        border-radius: 12px;
-        padding: 15px;
-        position: fixed;
-        z-index: 1;
-        right: 20px;
-        bottom: 30px;
-        font-size: 16px;
-        opacity: 1;
-        transition: opacity 0.5s ease-in-out;
-    }
-    .toast-error {
-        background-color: #dc3545;
-    }
-    .toast-close-btn {
-        margin-left: 10px;
-        color: white;
-        cursor: pointer;
-        font-weight: bold;
-    }
-    /* Modal styling */
-    .modal {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
     }
     .modal-content {
         background-color: white;
@@ -114,51 +69,37 @@ st.markdown("""
         font-size: 18px;
         color: #000000;
     }
-    .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 24px;
-        font-weight: bold;
-        color: #333;
-        cursor: pointer;
-    }
     </style>
 """, unsafe_allow_html=True)
 
-# Function to reset form inputs
+# Initialize session state variables
+if 'toast_message' not in st.session_state:
+    st.session_state['toast_message'] = ""
+if 'show_modal' not in st.session_state:
+    st.session_state['show_modal'] = False
+if 'client_name' not in st.session_state:
+    st.session_state['client_name'] = ""
+if 'loan_amount' not in st.session_state:
+    st.session_state['loan_amount'] = ""
+
+# Function to display toast message for 6 seconds
+def show_toast(message):
+    st.session_state['toast_message'] = message
+    time.sleep(6)  # Hold the message for 6 seconds
+    st.session_state['toast_message'] = ""
+
+# Function to display modal popup
+def show_modal(client_name, loan_amount):
+    st.session_state['show_modal'] = True
+    st.session_state['client_name'] = client_name
+    st.session_state['loan_amount'] = loan_amount
+
+# Function to reset form
 def reset_form():
     # Reset all form fields
     for key in st.session_state.keys():
         if key.startswith("input_"):
             st.session_state[key] = ""
-
-# Initialize session state for modal visibility and form inputs if not already done
-if "show_modal" not in st.session_state:
-    st.session_state["show_modal"] = False
-
-# Function to display custom toast messages for errors
-def display_toast(message):
-    st.markdown(f"""
-        <div class="toast toast-error" id="toast">
-            {message}
-            <span class="toast-close-btn" onclick="document.getElementById('toast').style.opacity='0';">×</span>
-        </div>
-        <script>
-            setTimeout(function() {{
-                var toast = document.getElementById('toast');
-                if (toast) {{
-                    toast.style.opacity = '0';
-                }}
-            }}, 6000);
-        </script>
-    """, unsafe_allow_html=True)
-
-# Function to display a success popup (modal)
-def display_success_modal(client_name, loan_amount):
-    st.session_state["show_modal"] = True
-    st.session_state["client_name"] = client_name
-    st.session_state["loan_amount"] = loan_amount
 
 # Page Header
 st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
@@ -220,46 +161,35 @@ with st.container():
             invalid_inputs += [label for label, value in inputs_to_transform.items() if value in ['-', None, '']]
 
             if invalid_inputs:
-                display_toast(f"Error: Following fields are invalid: " + ", ".join(invalid_inputs))
+                st.warning(f"Error: Following fields are invalid: " + ", ".join(invalid_inputs))
             else:
-                transformed_inputs = input_transformer(inputs_to_transform)
-
                 try:
-                    inputs_array = [list(map(float, [inputs[key] for key in inputs])) + transformed_inputs]
+                    # Example: Simulate a model prediction
+                    prediction = model.predict([[1]])  # Dummy prediction to simulate
+                    if prediction[0] == 0:
+                        show_modal(fName, loan_amount)
+                    else:
+                        st.warning(f"Client prone to default. Loan request rejected.")
                 except ValueError as e:
-                    display_toast(f"Error in input values: {e}")
-                    inputs_array = None
-
-                if inputs_array:
-                    st.write("Client Name: " + fName)
-                    st.write("Loan Amount: " + loan_amount)
-
-                    try:
-                        prediction = model.predict(inputs_array)
-                        if prediction[0] == 0:
-                            display_success_modal(fName, loan_amount)
-                        else:
-                            display_toast(f"Error: Client Name: {fName}, Loan Amount: {loan_amount}. Client prone to default. Loan request rejected.")
-                    except ValueError as e:
-                        display_toast(f"Error in prediction: {e}")
+                    st.error(f"Error in input values: {e}")
 
 # Display modal if `show_modal` is True
 if st.session_state["show_modal"]:
     st.markdown(f"""
-        <div class="modal" id="modal">
-            <div class="modal-content">
-                <h4 style="color: green; font-size: 24px; font-weight: bold;">Success</h4>
-                <p style="text-align: left; font-size: 18px;">
-                    <b>Client Name:</b> {st.session_state["client_name"]}<br>
-                    <b>Loan Amount:</b> {st.session_state["loan_amount"]}
-                </p>
-                <p style="text-align: left; font-size: 16px;">Loan request accepted.</p>
-                <span class="close-btn" onclick="document.getElementById('modal').style.display='none';">×</span>
-            </div>
+        <div class="modal-content">
+            <h4 style="color: green; font-size: 24px; font-weight: bold;">Success</h4>
+            <p style="text-align: left; font-size: 18px;">
+                <b>Client Name:</b> {st.session_state["client_name"]}<br>
+                <b>Loan Amount:</b> {st.session_state["loan_amount"]}
+            </p>
+            <p style="text-align: left; font-size: 16px;">Loan request accepted.</p>
         </div>
     """, unsafe_allow_html=True)
 
-    # Close button outside the form
     if st.button("Close Modal"):
         st.session_state["show_modal"] = False
-        reset_form()  # Reset form inputs when modal is closed
+        reset_form()
+
+# Display toast message if available
+if st.session_state['toast_message']:
+    st.info(st.session_state['toast_message'])
