@@ -9,7 +9,7 @@ model = pickle.load(open('RFMmodel.sav', 'rb'))
 image = Image.open("LoanDrive.jpg")
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
 
-# Custom CSS for modal and form styling
+# Custom CSS for modal, toast, and form styling
 st.markdown("""
     <style>
     body {
@@ -40,6 +40,28 @@ st.markdown("""
         color: white;
         border-radius: 10px;    
     }
+    .block-container {
+        padding-top: 2rem;
+    }
+    .stImage {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .stImage img {
+        max-width: 200px;
+        height: auto;
+    }
+    input, select, textarea, .stTextInput, .stSelectbox, .stSlider {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+    label {
+        font-size: 18px !important;
+        font-weight: bold;
+        color: #000000 !important;
+    }
+    /* Modal styling */
     .modal-content {
         background-color: white;
         padding: 40px;
@@ -139,13 +161,19 @@ with st.container():
             else:
                 try:
                     # Create a dummy input array for prediction
-                    inputs_array = [[float(inputs["Loan Amount"]), float(inputs["Income"]), float(inputs["Loan Annuity"]), 
-                                     float(inputs["Age"]), float(inputs["Child Count"]), float(inputs["Employed Days"]), 
-                                     float(inputs["Years since registration"])]]
+                    inputs_array = [[
+                        float(inputs["Loan Amount"]), 
+                        float(inputs["Income"]), 
+                        float(inputs["Loan Annuity"]), 
+                        float(inputs["Age"]), 
+                        float(inputs["Child Count"]), 
+                        float(inputs["Employed Days"]), 
+                        float(inputs["Years since registration"])
+                    ]]
                     
-                    # Make a prediction (this is a placeholder for the actual model)
+                    # Make a prediction using the model
                     prediction = model.predict(inputs_array)
-                    
+
                     if prediction[0] == 0:
                         show_modal(fName, loan_amount)
                     else:
