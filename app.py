@@ -138,6 +138,28 @@ with mainContainer:
     bike_owned = col1.selectbox("Bike owner?" , ("-", "Yes" , "No"))
     house_owned = col1.selectbox("House owner?" , ("-", "Yes" , "No"))
 
+    # Centering and styling the submit button
+    st.markdown(
+        """
+        <style>
+        .center-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+        }
+        .center-button button {
+            width: 200px;
+            height: 50px;
+            font-size: 20px;
+        }
+        </style>
+        <div class="center-button">
+            <button type="submit">Submit</button>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     Submit = tab1.form_submit_button("Submit")
     if Submit:
