@@ -139,7 +139,7 @@ with mainContainer:
     house_owned = col1.selectbox("House owner?" , ("-", "Yes" , "No"))
 
    # Centering the submit button using columns
-    col_center = tab1.columns([1, 0, 1])
+    col_center = tab1.columns([1, 1, 1])
     with col_center[1]:
         Submit = st.form_submit_button("Submit", help="Click to submit the form")
 
