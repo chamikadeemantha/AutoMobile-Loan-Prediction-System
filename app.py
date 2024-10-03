@@ -25,7 +25,7 @@ st.markdown(
     @import url('https://fonts.googleapis.com/css2?family=Rampart+One&display=swap');
     .header {
         text-align: center;
-        font-size: 35px;
+        font-size: 40px;
         font-family: 'Rampart One', sans-serif;
         font-weight: bold;
         color: #D8D2C2;
