@@ -10,19 +10,19 @@ image = Image.open("LoanDrive.png")
 
 # Set page configuration
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
-# Page Header
-st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
-# Create columns to center the image
-col1, col2, col3 = st.columns([1, 6, 1])
+# Create centered header
+st.markdown("<h1 style='text-align: center; font-size: 40px;'>Welcome to LoanDrive - Loan Default Prediction</h1>", unsafe_allow_html=True)
 
-with col1:
-    st.write("")
+# Centering the image using HTML
+st.markdown(
+    f"""
+    <div style="text-align: center;">
+        <img src="data:image/png;base64,{st.image(image)._repr_png_()}" alt="LoanDrive Logo" width="300">
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
-with col2:
-    st.image(image, caption=None, width=300)
-
-with col3:
-    st.write("")
 
 def input_transformer(inputs):
     value_map = {
