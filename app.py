@@ -24,8 +24,8 @@ st.markdown(
     <style>
     .header {
         text-align: center;
-        font-size: 30px;
-        font-family: 'Poppins', sans-serif;
+        font-size: 35px;
+        font-family: 'Helvetica', sans-serif;
         font-weight: bold;
         color: #D8D2C2;
     }
