@@ -186,7 +186,7 @@ with mainContainer:
             st.write("Client Name: " + fName)
             st.write("Loan Amount: " + str(loan_amount))
             # print(inputs)
-            if inputs.get('Loan Annuity') == 50000:
+            if inputs.get('Loan Annuity') >= 50000:
                 st.error("Please reject the above request as client is more prone to default on the loan")
             else:
                 prediction = model.predict(inputs_array)
