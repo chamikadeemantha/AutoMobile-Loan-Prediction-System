@@ -19,7 +19,21 @@ img_str = base64.b64encode(buffered.getvalue()).decode()
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
 
 # Create centered header
-st.markdown("<h1 style='text-align: center; font-size: 40px;'>Welcome to LoanDrive - Loan Default Prediction</h1>", unsafe_allow_html=True)
+st.markdown(
+    """
+    <style>
+    .header {
+        text-align: center;
+        font-size: 40px;
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        color: #4CAF50;
+    }
+    </style>
+    <h1 class="header">Welcome to LoanDrive - Loan Default Prediction</h1>
+    """,
+    unsafe_allow_html=True
+)
 
 # Centering the image using HTML
 st.markdown(
