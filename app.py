@@ -3,7 +3,7 @@ import streamlit as st
 from PIL import Image
 
 # Load the saved model
-model = pickle.load(open('RFMmodel.sav', 'rb'))
+model = pickle.load(open('RFModel.sav', 'rb'))
 
 # Load and display the image
 image = Image.open("LoanDrive.jpg")
