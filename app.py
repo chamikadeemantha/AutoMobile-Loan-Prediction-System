@@ -139,10 +139,10 @@ with mainContainer:
     house_owned = col1.selectbox("House owner?" , ("-", "Yes" , "No"))
 
    # Centering the submit button using columns
-    col_center = tab1.columns([1, 2, 1])
+    col_center = tab1.columns([1, 6, 1])
     with col_center[1]:
         Submit = st.form_submit_button("Submit", help="Click to submit the form")
-        
+
     if Submit:
         inputs = { "Loan Amount":loan_amount , "Income": income , "Loan Annuity":loan_annuity , "Age": age, "Child Count": child_count, "Employed Days": employed_days, "Years since registration": registration }
         inputs_to_transform = {
