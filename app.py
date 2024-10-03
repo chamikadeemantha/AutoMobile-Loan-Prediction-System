@@ -28,7 +28,7 @@ st.markdown(
         font-size: 40px;
         font-family: 'Rampart One', sans-serif;
         font-weight: bold;
-        color: #D8D2C2;
+        color: #FAF7F0;
     }
     </style>
     <h1 class="header">Welcome to LoanDrive - Loan Default Prediction</h1>
