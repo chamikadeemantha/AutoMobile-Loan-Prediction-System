@@ -9,21 +9,27 @@ model = pickle.load(open('RFModel.sav', 'rb'))
 
 # Load and display the image
 image = Image.open("LoanDrive.png")
+# Convert the image to a base64 string
+buffered = BytesIO()
+image.save(buffered, format="PNG")
+img_str = base64.b64encode(buffered.getvalue()).decode()
+
+# Set page configuration
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
 
 # Display the image with reduced size and centered alignment using HTML and CSS
 st.markdown(
-    """
+    f"""
     <style>
-    .center {
+    .center {{
         display: block;
         margin-left: auto;
         margin-right: auto;
         width: 50%;
-    }
+    }}
     </style>
-    <img src="data:image/png;base64,{}" class="center">
-    """.format(st.image(image, caption=None, width=300, use_column_width=False, output_format="PNG")),
+    <img src="data:image/png;base64,{img_str}" class="center">
+    """,
     unsafe_allow_html=True
 )
 
