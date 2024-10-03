@@ -66,36 +66,36 @@ def input_transformer(inputs):
             "No": 0
         },
         "Client Income Type": {
-          "Commercial": 1,
-          "Service": 2,
-          "Student": 3,
-          "Retired": 4,
-          "Unemployed": 5
+            "Commercial": 1,
+            "Service": 2,
+            "Student": 3,
+            "Retired": 4,
+            "Unemployed": 5
         },
         "Client Education": {
-          "Secondary": 1,
-          "Graduation": 2
+            "Secondary": 1,
+            "Graduation": 2
         },
         "Client Marital Status": {
-          'Married': 1,
-          'Widow': 2,
-          'Single': 3,
-          'Divorced':4
+            'Married': 1,
+            'Widow': 2,
+            'Single': 3,
+            'Divorced':4
         },
         "Client Gender": {
-          'Male': 1,
-          'Female': 2
+            'Male': 1,
+            'Female': 2
         },
         "Loan Contract Type": {
-          'Cash Loan': 1,
-          'Revolving Loan': 2
+            'Cash Loan': 1,
+            'Revolving Loan': 2
         }
     }
 
     transformed_inputs = []
     for input, value in inputs.items():
-       if (value_map[input] != None and value_map[input][value] != None):
-        transformed_inputs.append(value_map[input][value])
+        if (value_map[input] != None and value_map[input][value] != None):
+            transformed_inputs.append(value_map[input][value])
 
     return transformed_inputs
 
@@ -124,7 +124,7 @@ with mainContainer:
 
     
     loan_amount = col2.number_input("Enter loan amount requested: ", min_value=0.0, step=10000.00)
-  
+
     loan_annuity = col2.number_input("Enter loan annuity amount: ", min_value=0.0, step=10000.00)
 
     age = col2.slider("Enter age: " , min_value = 20 , max_value= 60 , on_change=None)
@@ -138,7 +138,7 @@ with mainContainer:
     bike_owned = col1.selectbox("Bike owner?" , ("-", "Yes" , "No"))
     house_owned = col1.selectbox("House owner?" , ("-", "Yes" , "No"))
 
-   # Centering the submit button using columns
+    # Centering the submit button using columns
     col_center = tab1.columns([1, 1, 1])
     with col_center[1]:
         Submit = st.form_submit_button("Submit", help="Click to submit the form")
@@ -146,16 +146,16 @@ with mainContainer:
     if Submit:
         inputs = { "Loan Amount":loan_amount , "Income": income , "Loan Annuity":loan_annuity , "Age": age, "Child Count": child_count, "Employed Days": employed_days, "Years since registration": registration }
         inputs_to_transform = {
-                               "House Owned": house_owned,
-                               "Car Owned": car_owned,
-                               "Bike Owned": bike_owned,
-                               "Has Active Loan": active_loan,
-                               "Client Income Type": income_type,
-                               "Client Education": education,
-                               "Client Marital Status": marital_status,
-                               "Client Gender": gender,
-                               "Loan Contract Type": loan_contract_type
-        }
+                                "House Owned": house_owned,
+                                "Car Owned": car_owned,
+                                "Bike Owned": bike_owned,
+                                "Has Active Loan": active_loan,
+                                "Client Income Type": income_type,
+                                "Client Education": education,
+                                "Client Marital Status": marital_status,
+                                "Client Gender": gender,
+                                "Loan Contract Type": loan_contract_type
+            }
 
 
         invalid_inputs = []
@@ -180,20 +180,15 @@ with mainContainer:
             invalid_inputs_str = "Following fields are invalid: \n"
             st.error(invalid_inputs_str + ", ".join(invalid_inputs))
         else:
-            if loan_annuity == 50000:
-                tab.empty()
-                transformed_inputs = input_transformer(inputs_to_transform)
-                inputs_array = [list(inputs.values()) + transformed_inputs]
-                st.write("Client Name: " + fName)
-                st.write("Loan Amount: " + str(loan_amount))
-                st.error("Please reject the above request as the loan annuity amount is 50000, which is not acceptable.")
+            tab.empty()
+            transformed_inputs = input_transformer(inputs_to_transform)
+            inputs_array = [list(inputs.values()) + transformed_inputs]
+            st.write("Client Name: " + fName)
+            st.write("Loan Amount: " + str(loan_amount))
+            # print(inputs)
+            if inputs.get('annuity') == 50000:
+                st.error("Please reject the above request as client annuity is 50000")
             else:
-                tab.empty()
-                transformed_inputs = input_transformer(inputs_to_transform)
-                inputs_array = [list(inputs.values()) + transformed_inputs]
-                st.write("Client Name: " + fName)
-                st.write("Loan Amount: " + str(loan_amount))
-                # print(inputs)
                 prediction = model.predict(inputs_array)
                 if prediction[0] == 0:
                     st.success("Please accept the above loan request")
