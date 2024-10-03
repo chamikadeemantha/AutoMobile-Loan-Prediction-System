@@ -118,16 +118,16 @@ with mainContainer:
     employed_days = col1.slider("Enter number of employed years before application: " , min_value = 0 , max_value= 80 , on_change=None)
 
     
-    income = col1.number_input("Enter client income: ", min_value=0.0, step=10000.00)
+    income = col2.number_input("Enter client income: ", min_value=0.0, step=10000.00)
     income_type = col2.selectbox("Enter income type: " , ("-", 'Commercial','Retired' ,'Service', 'Student' , 'Unemployed') , on_change=None)
     loan_contract_type = col2.selectbox("Enter loan contract type: " , ("-", 'Cash Loan', 'Revolving Loan') , on_change=None)
 
     
-    loan_amount = col1.number_input("Enter loan amount requested: ", min_value=0.0, step=10000.00)
+    loan_amount = col2.number_input("Enter loan amount requested: ", min_value=0.0, step=10000.00)
   
     loan_annuity = col2.number_input("Enter loan annuity amount: ", min_value=0.0, step=10000.00)
 
-    age = col1.slider("Enter age: " , min_value = 20 , max_value= 60 , on_change=None)
+    age = col2.slider("Enter age: " , min_value = 20 , max_value= 60 , on_change=None)
 
     gender = col1.selectbox("Enter client gender: " , ("-", "Female", "Male" ) , on_change=None)
     child_count = col2.selectbox("Enter child count: " , (0,1,2,3,4,5,6,7,8,9,10) , on_change=None)
