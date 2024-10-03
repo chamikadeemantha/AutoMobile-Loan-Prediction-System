@@ -15,13 +15,13 @@ st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=im
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col1:
-    st.write("")
+    st.empty()
 
 with col2:
     st.image(image, caption=None, width=300)
 
 with col3:
-    st.write("")
+    st.empty()
 
 def input_transformer(inputs):
     value_map = {
@@ -76,7 +76,7 @@ def input_transformer(inputs):
     return transformed_inputs
 # Page Header
 st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
-st.image(image, caption=None, width=300, use_column_width=False)
+
 mainContainer = st.container()
 
 with mainContainer:
