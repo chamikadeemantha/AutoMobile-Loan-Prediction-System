@@ -1,4 +1,4 @@
-#FDM_Project
+FDM_Project
 An intelligent software solution to predict automobile loan defaulting.
 
 This project was developed as part of the 3rd Year 2nd semester project for the Fundamentals of Data Mining module in the BSc.(Hons) Information Technology Specializing in Data Science.
@@ -17,8 +17,8 @@ Tools and Technologies
 
 Deployed Link:
 
-LoanDrive Streamlit App
-Product Demonstration Video:
+LoanDrive Streamlit App: https://loandrive.streamlit.app
+Product Demonstration Video: https://youtu.be/lSvPHMvaDNg
 
 Watch the Demo
 Group Members
