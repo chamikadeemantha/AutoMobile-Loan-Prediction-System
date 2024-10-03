@@ -6,7 +6,7 @@ from PIL import Image
 model = pickle.load(open('RFModel.sav', 'rb'))
 
 # Load and display the image
-image = Image.open("LoanDrive.PNG")
+image = Image.open("LoanDrive.jpg")
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
 
 # Custom CSS for modal, toast, and form styling
