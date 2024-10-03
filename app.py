@@ -10,7 +10,22 @@ model = pickle.load(open('RFModel.sav', 'rb'))
 # Load and display the image
 image = Image.open("LoanDrive.png")
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
-st.image(image, caption=None, width=300, use_column_width=False)
+
+# Display the image with reduced size and centered alignment using HTML and CSS
+st.markdown(
+    """
+    <style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+    }
+    </style>
+    <img src="data:image/png;base64,{}" class="center">
+    """.format(st.image(image, caption=None, width=300, use_column_width=False, output_format="PNG")),
+    unsafe_allow_html=True
+)
 
 def input_transformer(inputs):
     value_map = {
@@ -65,7 +80,7 @@ def input_transformer(inputs):
     return transformed_inputs
 # Page Header
 st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
-
+st.image(image, caption=None, width=300, use_column_width=False)
 mainContainer = st.container()
 
 with mainContainer:
