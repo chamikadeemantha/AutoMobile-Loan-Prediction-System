@@ -22,10 +22,11 @@ st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=im
 st.markdown(
     """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rampart+One&display=swap');
     .header {
         text-align: center;
         font-size: 35px;
-        font-family: 'Helvetica', sans-serif;
+        font-family: 'Rampart One', sans-serif;
         font-weight: bold;
         color: #D8D2C2;
     }
@@ -39,7 +40,7 @@ st.markdown(
 st.markdown(
     f"""
     <div style="text-align: center;">
-        <img src="data:image/png;base64,{img_str}" alt="LoanDrive Logo" width="300">
+        <img src="data:image/png;base64,{img_str}" alt="LoanDrive Logo" width="400">
     </div>
     """,
     unsafe_allow_html=True
