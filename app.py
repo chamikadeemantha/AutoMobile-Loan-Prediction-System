@@ -24,10 +24,10 @@ st.markdown(
     <style>
     .header {
         text-align: center;
-        font-size: 40px;
-        font-family: 'Arial', sans-serif;
+        font-size: 30px;
+        font-family: 'Poppins', sans-serif;
         font-weight: bold;
-        color: #4CAF50;
+        color: #D8D2C2;
     }
     </style>
     <h1 class="header">Welcome to LoanDrive - Loan Default Prediction</h1>
