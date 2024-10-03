@@ -117,12 +117,15 @@ with mainContainer:
     education = col1.selectbox("Enter client education: " , ("-", 'Secondary', 'Graduation') , on_change=None)
     employed_days = col1.slider("Enter number of employed years before application: " , min_value = 0 , max_value= 80 , on_change=None)
 
-    income = col1.text_input("Enter client income: "  , value = 0 ,on_change=None)
+    # Updated to st.number_input
+    income = col1.number_input("Enter client income: ", min_value=0.0, step=0.01)
     income_type = col2.selectbox("Enter income type: " , ("-", 'Commercial','Retired' ,'Service', 'Student' , 'Unemployed') , on_change=None)
     loan_contract_type = col2.selectbox("Enter loan contract type: " , ("-", 'Cash Loan', 'Revolving Loan') , on_change=None)
 
-    loan_amount = col1.text_input("Enter loan amount requested: " , value = 0 , on_change=None)
-    loan_annuity = col2.text_input("Enter loan annuity amount: " , value = 0 , on_change=None)
+    # Updated to st.number_input
+    loan_amount = col1.number_input("Enter loan amount requested: ", min_value=0.0, step=0.01)
+    # Updated to st.number_input
+    loan_annuity = col2.number_input("Enter loan annuity amount: ", min_value=0.0, step=0.01)
 
     age = col1.slider("Enter age: " , min_value = 20 , max_value= 60 , on_change=None)
 
@@ -157,7 +160,8 @@ with mainContainer:
         if fName.strip() == "":
             invalid_inputs.append("Client Name")
 
-        if loan_amount.strip() == "0" or loan_amount.strip() == "":
+        # Updated validation logic
+        if loan_amount == 0:
             invalid_inputs.append("Loan Amount")
 
         for label, value in inputs.items():
@@ -177,7 +181,7 @@ with mainContainer:
            transformed_inputs = input_transformer(inputs_to_transform)
            inputs_array = [list(inputs.values()) + transformed_inputs]
            st.write("Client Name: " + fName)
-           st.write("Loan Amount: " + loan_amount)
+           st.write("Loan Amount: " + str(loan_amount))
            # print(inputs)
            prediction  = model.predict(inputs_array)
            if prediction[0] == 0:
