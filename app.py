@@ -1,6 +1,8 @@
 import pickle
 import streamlit as st
 from PIL import Image
+import base64
+from io import BytesIO
 
 # loading the saved models
 model = pickle.load(open('RFModel.sav', 'rb'))
@@ -8,8 +10,14 @@ model = pickle.load(open('RFModel.sav', 'rb'))
 # Load the image
 image = Image.open("LoanDrive.png")
 
+# Convert the image to a base64 string
+buffered = BytesIO()
+image.save(buffered, format="PNG")
+img_str = base64.b64encode(buffered.getvalue()).decode()
+
 # Set page configuration
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
+
 # Create centered header
 st.markdown("<h1 style='text-align: center; font-size: 40px;'>Welcome to LoanDrive - Loan Default Prediction</h1>", unsafe_allow_html=True)
 
@@ -17,7 +25,7 @@ st.markdown("<h1 style='text-align: center; font-size: 40px;'>Welcome to LoanDri
 st.markdown(
     f"""
     <div style="text-align: center;">
-        <img src="data:image/png;base64,{st.image(image)._repr_png_()}" alt="LoanDrive Logo" width="300">
+        <img src="data:image/png;base64,{img_str}" alt="LoanDrive Logo" width="300">
     </div>
     """,
     unsafe_allow_html=True
