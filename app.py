@@ -29,6 +29,12 @@ st.markdown(
         font-weight: bold;
         color: #4CAF50;
     }
+    .form-header {
+        font-size: 20px; /* Adjust the font size as needed */
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        color: #4CAF50;
+    }
     </style>
     <h1 class="header">Welcome to LoanDrive - Loan Default Prediction</h1>
     """,
@@ -105,8 +111,21 @@ with mainContainer:
     
     tab = st.table()
 
-    tab1 = tab.form(key='my_form')
-    tab1.header("Enter the Following Details to Predict Loan Default Status")
+    with tab.form(key='my_form'):
+        st.markdown(
+            """
+            <style>
+            .form-header {
+                font-size: 20px; /* Adjust the font size as needed */
+                font-family: 'Arial', sans-serif;
+                font-weight: bold;
+                color: #333333;
+            }
+            </style>
+            <h2 class="form-header">Enter the Following Details to Predict Loan Default Status</h2>
+            """,
+            unsafe_allow_html=True
+        )
 
     col1 , col2 = tab1.columns(2)
 
