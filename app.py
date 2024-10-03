@@ -5,7 +5,7 @@ import streamlit as st
 
 # loading the saved models
 
-model = pickle.load(open('SVMmodel.sav', 'rb'))
+model = pickle.load(open('RFModel.sav', 'rb'))
 
 # Load and display the image
 image = Image.open("LoanDrive.jpg")
