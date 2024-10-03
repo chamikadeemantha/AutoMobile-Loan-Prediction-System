@@ -2,7 +2,9 @@ FDM_Project
 An intelligent software solution to predict automobile loan defaulting.
 
 This project was developed as part of the 3rd Year 2nd semester project for the Fundamentals of Data Mining module in the BSc.(Hons) Information Technology Specializing in Data Science.
+
 Introduction
+
 
 In today’s context, the ongoing financial crisis, coupled with rising inflation and interest rates, has stretched consumers' financial strength. This has resulted in significant issues within the financial system. Given the inadequacy of public transport and the need for private vehicles in every household, a substantial proportion of loans fall within the automobile/auto loan category. These loans are especially vulnerable to customer default, as they often do not provide any financial return.
 
