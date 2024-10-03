@@ -138,30 +138,11 @@ with mainContainer:
     bike_owned = col1.selectbox("Bike owner?" , ("-", "Yes" , "No"))
     house_owned = col1.selectbox("House owner?" , ("-", "Yes" , "No"))
 
-    # Centering and styling the submit button
-    st.markdown(
-        """
-        <style>
-        .center-button {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 50px;
-        }
-        .center-button button {
-            width: 200px;
-            height: 50px;
-            font-size: 20px;
-        }
-        </style>
-        <div class="center-button">
-            <button type="submit">Submit</button>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    Submit = tab1.form_submit_button("Submit")
+   # Centering the submit button using columns
+    col_center = tab1.columns([1, 2, 1])
+    with col_center[1]:
+        Submit = st.form_submit_button("Submit", help="Click to submit the form")
+        
     if Submit:
         inputs = { "Loan Amount":loan_amount , "Income": income , "Loan Annuity":loan_annuity , "Age": age, "Child Count": child_count, "Employed Days": employed_days, "Years since registration": registration }
         inputs_to_transform = {
