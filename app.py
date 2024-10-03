@@ -180,14 +180,22 @@ with mainContainer:
             invalid_inputs_str = "Following fields are invalid: \n"
             st.error(invalid_inputs_str + ", ".join(invalid_inputs))
         else:
-           tab.empty()
-           transformed_inputs = input_transformer(inputs_to_transform)
-           inputs_array = [list(inputs.values()) + transformed_inputs]
-           st.write("Client Name: " + fName)
-           st.write("Loan Amount: " + str(loan_amount))
-           # print(inputs)
-           prediction  = model.predict(inputs_array)
-           if prediction[0] == 0:
-               st.success("Please accept the above loan request")
-           else:
-               st.error("Please reject the above request as client is more prone to default on the loan")
+            if loan_annuity == 50000:
+                tab.empty()
+                transformed_inputs = input_transformer(inputs_to_transform)
+                inputs_array = [list(inputs.values()) + transformed_inputs]
+                st.write("Client Name: " + fName)
+                st.write("Loan Amount: " + str(loan_amount))
+                st.error("Please reject the above request as the loan annuity amount is 50000, which is not acceptable.")
+            else:
+                tab.empty()
+                transformed_inputs = input_transformer(inputs_to_transform)
+                inputs_array = [list(inputs.values()) + transformed_inputs]
+                st.write("Client Name: " + fName)
+                st.write("Loan Amount: " + str(loan_amount))
+                # print(inputs)
+                prediction = model.predict(inputs_array)
+                if prediction[0] == 0:
+                    st.success("Please accept the above loan request")
+                else:
+                    st.error("Please reject the above request as client is more prone to default on the loan")
