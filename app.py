@@ -13,7 +13,7 @@ st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=im
 # Page Header
 st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
 # Create columns to center the image
-ccol1, col2, col3 = st.columns([1, 6, 1])
+col1, col2, col3 = st.columns([1, 6, 1])
 
 with col1:
     st.write("")
