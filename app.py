@@ -10,18 +10,19 @@ image = Image.open("LoanDrive.png")
 
 # Set page configuration
 st.set_page_config(page_title="LoanDrive - Loan Default Predictor", page_icon=image, layout="wide")
-
+# Page Header
+st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
 # Create columns to center the image
-col1, col2, col3 = st.columns([1, 2, 1])
+ccol1, col2, col3 = st.columns([1, 6, 1])
 
 with col1:
-    st.empty()
+    st.write("")
 
 with col2:
     st.image(image, caption=None, width=300)
 
 with col3:
-    st.empty()
+    st.write("")
 
 def input_transformer(inputs):
     value_map = {
@@ -74,17 +75,16 @@ def input_transformer(inputs):
         transformed_inputs.append(value_map[input][value])
 
     return transformed_inputs
-# Page Header
-st.markdown('<div class="header">Welcome to LoanDrive - Loan Default Prediction</div>', unsafe_allow_html=True)
+
 
 mainContainer = st.container()
 
 with mainContainer:
-    st.markdown('<div class="form-title">Enter the Following Details to Predict Loan Default Status</div>', unsafe_allow_html=True)
+    
     tab = st.table()
 
     tab1 = tab.form(key='my_form')
-    tab1.header("Enter Following Details to predict Loan Default status")
+    tab1.header("Enter the Following Details to Predict Loan Default Status")
 
     col1 , col2 = tab1.columns(2)
 
